@@ -2,6 +2,10 @@
 
 Hotkeys with Effector made easy
 
+- Easy-to-use, no need to implement by yourself
+- Supports both Windows/MacOS style hotkeys
+- Doesn't break if using with SSR
+
 ## Installation
 
 ```bash
@@ -37,4 +41,16 @@ const spacePress = hotkey({ key: 'Space', type: 'keypress' });
 ```tsx
 const copyPressed = hotkey('Ctrl+C');
 const spaceDown = hotkey('Space', 'keydown');
+```
+
+## Extra
+
+#### `keyup`, `keydown`, `keypress` events
+
+You can use internal wrappers for native events as well
+
+```tsx
+import { keyup, keydown, keypress } from 'effector';
+
+keyup.watch(console.log); // KeyboardEvent
 ```
