@@ -15,7 +15,7 @@ npm i effectot-hotkey
 ## Usage
 
 ```tsx
-import { hotkey } from 'effector';
+import { hotkey } from 'effector-hotkey';
 
 const copyPressed = hotkey({ key: 'Ctrl+C' });
 
@@ -31,6 +31,8 @@ sample({
 #### Specifying event type
 
 ```tsx
+import { hotkey } from 'effector-hotkey';
+
 const spaceDown = hotkey({ key: 'Space', type: 'keydown' });
 const spaceUp = hotkey({ key: 'Space', type: 'keyup' });
 const spacePress = hotkey({ key: 'Space', type: 'keypress' });
@@ -39,8 +41,50 @@ const spacePress = hotkey({ key: 'Space', type: 'keypress' });
 #### Shortcut
 
 ```tsx
+import { hotkey } from 'effector-hotkey';
+
 const copyPressed = hotkey('Ctrl+C');
 const spaceDown = hotkey('Space', 'keydown');
+```
+
+#### `filter` prop
+
+```tsx
+import { hotkey } from 'effector-hotkey';
+import { createStore } from 'effector';
+
+const $isConfirmModalOpened = createStore(true);
+
+hotkey({
+  key: 'Y',
+  filter: $isConfirmModalOpened,
+  target: removeFx,
+});
+
+hotkey({
+  key: 'N',
+  filter: $isConfirmModalOpened,
+  target: closeModal,
+});
+```
+
+#### `target` prop
+
+If you want to just trigger something instead of listening to event, you can use `target` prop:
+
+```tsx
+import { sample } from 'effector';
+import { hotkey } from 'effector-hotkey';
+
+hotkey({
+  key: 'Ctrl+C',
+  target: copyTextFx,
+});
+// <=>
+sample({
+  clock: hotkey('Ctrl+C'),
+  target: copyTextFx,
+});
 ```
 
 ## Extra
@@ -50,7 +94,33 @@ const spaceDown = hotkey('Space', 'keydown');
 You can use internal wrappers for native events as well
 
 ```tsx
-import { keyup, keydown, keypress } from 'effector';
+import { keyup, keydown, keypress } from 'effector-hotkey';
 
 keyup.watch(console.log); // KeyboardEvent
+```
+
+#### `$isShiftDown`, `$isCtrlDown`, `$isAltDown`
+
+You can also use pre-made stores to track if `Shift`/`Ctrl`/`Alt` buttons are held
+
+Simple use-case: display hotkeys in UI while holding `Ctrl`
+
+```tsx
+import { useStore } from 'effector-react';
+import { hotkey, $isCtrlDown } from 'effector-hotkey';
+
+const SubmitButton = () => {
+  const isCtrlDown = useStore($isCtrlDown);
+
+  return (
+    <Button onClick={savePressed}>{isCtrlDown ? 'Ctrl+S' : 'Save'}</Button>
+  );
+};
+
+const savePressed = createEvent<MouseEvent>();
+
+sample({
+  clock: [savePressed, hotkey('Ctrl+S')],
+  target: saveFx,
+});
 ```
