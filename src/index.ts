@@ -5,8 +5,8 @@ import {
   Store,
   Target,
   sample,
-  Subscription,
   createStore,
+  Unit,
 } from 'effector';
 import { validateHotkey } from './utils/validate-hotkey';
 
@@ -36,32 +36,35 @@ interface hotkeyT {
     key: KeyboardEvent['key'];
     type?: keyof typeof keyEvents;
     filter?: Store<boolean>;
-    target: Target;
-  }): Subscription;
-  (params: {
-    key: KeyboardEvent['key'];
-    type?: keyof typeof keyEvents;
-    filter?: Store<boolean>;
+    target?: Target;
   }): Event<KeyboardEvent>;
 }
 
 /** Returns `Event` that gets triggered when a certain key pressed (or keyup/keydown events triggered) */
-// @ts-expect-error
 export const hotkey: hotkeyT = (...args) => {
   const normalizedParams =
-    typeof args[0] === 'string' ? { key: args[0], type: args[1] } : args[0];
+    typeof args[0] === 'string'
+      ? { key: args[0], type: args[1] }
+      : {
+          key: args[0].key,
+          type: args[0].type,
+          filter: args[0].filter,
+          target: args[0].target,
+        };
   let keyTriggered = guard({
     clock: keyEvents[normalizedParams.type || 'keyup'],
     filter: validateHotkey(normalizedParams.key),
-  });
+  }) as Event<KeyboardEvent>;
   if (normalizedParams.filter) {
     keyTriggered = guard({
       clock: keyTriggered,
-      filter: normalizedParams.filter,
+      filter: normalizedParams.filter as Store<boolean>,
     });
   }
   if (normalizedParams.target) {
-    return sample({
+    // @ts-expect-error
+    sample({
+      // @ts-expect-error
       clock: keyTriggered,
       // @ts-expect-error
       target: normalizedParams.target,
