@@ -9,7 +9,7 @@ Hotkeys with Effector made easy
 ## Installation
 
 ```bash
-npm i effectot-hotkey
+npm i effector-hotkey
 ```
 
 ## Usage
