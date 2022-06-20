@@ -6,9 +6,9 @@ import {
   Target,
   sample,
   createStore,
-  Unit,
 } from 'effector';
 import { validateHotkey } from './utils/validate-hotkey';
+import { keyboardSequence } from './keyboard_sequence';
 
 export const keyup = createEvent<KeyboardEvent>();
 export const keydown = createEvent<KeyboardEvent>();
@@ -78,3 +78,5 @@ if (typeof document !== 'undefined') {
   document.addEventListener('keydown', evt => keydown(evt));
   document.addEventListener('keypress', evt => keypress(evt));
 }
+
+export { keyboardSequence };

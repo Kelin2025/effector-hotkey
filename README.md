@@ -124,3 +124,27 @@ sample({
   target: saveFx,
 });
 ```
+
+## `keyboardSequence`
+
+It creates an event that triggers after a user types a given sequence on a keyboard in a browser.
+
+```ts
+const iddqdTyped = keyboardSequence('iddqd');
+
+iddqd.watch(() => console.log('GOD MOD ENABLED'));
+```
+
+To use operator in application with `scope`, you have to pass `start` event explicitly.
+
+```ts
+const appStarted = createEvent();
+
+const iddqdTyped = keyboardSequence('iddqd', { start: appStarted });
+
+iddqd.watch(() => console.log('GOD MOD ENABLED'));
+
+const scope = fork();
+
+// call appStarted on scope to start keyboard listening
+```

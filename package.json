@@ -21,6 +21,8 @@
     "effector": "^22"
   },
   "devDependencies": {
+    "@testing-library/dom": "^8.14.0",
+    "@testing-library/user-event": "^14.2.1",
     "effector": "^22",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1",
