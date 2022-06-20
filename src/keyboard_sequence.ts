@@ -7,6 +7,8 @@ import {
   scopeBind,
   createEffect,
   is,
+  restore,
+  attach,
 } from 'effector';
 
 /**
@@ -14,14 +16,18 @@ import {
  *
  * @param wantedSequence - Sequence of keys that should be typed
  * @param options.start - Event that triggers the start of the listening, used to bound result of operator to `scope`
+ * @param options.stop - Event that destroys listener
  */
 function keyboardSequence(
   wantedSequence: Store<string> | string,
-  options?: { start: Event<void> }
+  options?: { start: Event<void>; stop: Event<void> }
 ): Event<void> {
   const keypress = createEvent<KeyboardEvent>();
 
   const $pressedKeys = createStore<string[]>([], { serialize: 'ignore' });
+
+  const setBoundKeypress = createEvent<(event: KeyboardEvent) => void>();
+  const $boundKeypress = restore(setBoundKeypress, keypress);
 
   sample({
     clock: keypress,
@@ -39,12 +45,22 @@ function keyboardSequence(
       boundKeypress = keypress;
     }
 
+    setBoundKeypress(boundKeypress);
+
     document.addEventListener('keypress', boundKeypress);
+  });
+
+  const unsubscribeFx = attach({
+    source: $boundKeypress,
+    effect(boundKeypress) {
+      document.removeEventListener('keypress', boundKeypress);
+    },
   });
 
   if (options) {
     // Scope-full
     sample({ clock: options.start, target: subscribeFx });
+    sample({ clock: options.stop, target: unsubscribeFx });
   } else {
     // Scope-less
     subscribeFx();
@@ -60,6 +76,8 @@ function keyboardSequence(
       pressedKeys.join('').includes(wantedSequence),
     fn: () => {},
   });
+
+  sample({ clock: typed, fn: () => [], target: $pressedKeys });
 
   return typed;
 }

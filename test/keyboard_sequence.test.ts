@@ -9,7 +9,8 @@ import { keyboardSequence } from '../src/keyboard_sequence';
 describe('keyboardSequence/scope', () => {
   test('trigger after typing', async () => {
     const start = createEvent();
-    const typed = keyboardSequence('iddqd', { start });
+    const stop = createEvent();
+    const typed = keyboardSequence('iddqd', { start, stop });
 
     const listener = jest.fn();
     typed.watch(listener);
@@ -21,13 +22,23 @@ describe('keyboardSequence/scope', () => {
     await allSettled(start, { scope });
 
     await user.keyboard('iddqd');
-
     expect(listener).toBeCalledTimes(1);
+
+    await user.keyboard('iddqd');
+    expect(listener).toBeCalledTimes(2);
+
+    await allSettled(stop, { scope });
+
+    await user.keyboard('iddqd');
+    expect(listener).toBeCalledTimes(2);
   });
 
   test('DO NOT open after random typing', async () => {
     const start = createEvent();
-    const typed = keyboardSequence('randomstring', { start });
+    const typed = keyboardSequence('randomstring', {
+      start,
+      stop: createEvent(),
+    });
 
     const listener = jest.fn();
     typed.watch(listener);
