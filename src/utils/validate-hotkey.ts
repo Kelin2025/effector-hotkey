@@ -9,7 +9,7 @@ export const validateHotkey = (hotkey: string) => {
     if (hasShift && !evt.shiftKey) {
       return false;
     }
-    if (hasCmd && !evt.metaKey) {
+    if (hasCmd && !(evt.metaKey || evt.ctrlKey)) {
       return false;
     }
     if (hasOption && !evt.altKey) {
