@@ -15,6 +15,6 @@ export const validateHotkey = (hotkey: string) => {
     if (hasOption && !evt.altKey) {
       return false;
     }
-    return splitKeys.includes(evt.key);
+    return splitKeys.some((s) => s === evt.key || s === evt.code);
   };
 };
