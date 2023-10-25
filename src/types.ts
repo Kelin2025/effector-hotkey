@@ -90,4 +90,4 @@ type Key =
   | 'num8'
   | 'num9'
 
-export type Hotkey = `${Key}` | `${Key}+${Key}`;
+export type Hotkeys = `${Key}` | `${Key}+${Key}`;
