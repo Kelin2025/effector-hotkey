@@ -9,6 +9,7 @@ import {
   Unit,
 } from 'effector';
 import { validateHotkey } from './utils/validate-hotkey';
+import { Hotkey } from './types';
 
 export const keyup = createEvent<KeyboardEvent>();
 export const keydown = createEvent<KeyboardEvent>();
@@ -29,11 +30,11 @@ const keyEvents = {
 };
 
 interface hotkeyT {
-  (key: KeyboardEvent['key'], type?: keyof typeof keyEvents): Event<
+  (key: Hotkey, type?: keyof typeof keyEvents): Event<
     KeyboardEvent
   >;
   (params: {
-    key: KeyboardEvent['key'];
+    key: Hotkey;
     type?: keyof typeof keyEvents;
     filter?: Store<boolean>;
     target?: Target;
