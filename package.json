@@ -18,10 +18,10 @@
     "prepare": "tsdx build"
   },
   "peerDependencies": {
-    "effector": "^22"
+    "effector": "^23"
   },
   "devDependencies": {
-    "effector": "^22",
+    "effector": "^23",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1",
     "typescript": "^4.6.3"
